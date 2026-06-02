@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>BiblioTech</title>
+</head>
+
+<body>
+    <h1>Bem-vindos a BiblioTech - A Biblioteca do Futuro</h1>
+
+    <header>
+        <section class="navegacao">
+            <nav>
+                <ul>
+                    <li><a href="#gestaoCliente">Gestão de Clientes</a></li>
+                    <li><a href="#buscaInteligente">Busca Inteligente de Livros</a></li>
+                    <li><a href="#controleEmprestimos">Controle de Empréstimos</a></li>
+                </ul>
+            </nav>
+        </section>
+    </header>
+
+    <main>
+        <section class="gestaoCliente">
+            <h2 id="gestaoCliente">Gestão de Clientes</h2>
+            <p>Cadastre os dados dos clientes</p>
+            <form>
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="cpf">CPF:</label>
+                <input type="text" id="cpf" name="cpf" required>
+
+            </form>
+            <button onclick="CadastrarCliente()">
+                Cadastrar
+            </button>
+
+            <div id="listaClientes">
+                <h3>Clientes Cadastrados</h3>
+            </div>
+        </section>
+
+
+        <section class="buscaInteligente">
+            <h2 id="buscaInteligente">Busca Inteligente de Livros</h2>
+            <p>Encontre livros de forma rápida e eficiente com nossa busca inteligente.</p>
+
+            <input type="text" id="nome-livro" placeholder="Digite o nome do livro">
+
+            <button id="buscar-livro-btn">
+                Buscar Livro
+            </button>
+
+            <div id="status-livro"></div>
+            <div id="resultado-livros"></div>
+        </section>
+
+
+        <section class="controleEmprestimos">
+            <h2 id="controleEmprestimos">Controle de Empréstimos</h2>
+
+            <select id="clienteSelect"></select>
+
+            <button onclick="FinalizarEmprestimo()">
+                Finalizar Empréstimo
+            </button>
+
+            <div id="emprestimosAtivos">
+                <h3>Empréstimos Ativos</h3>
+            </div>
+
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 BiblioTech. Todos os direitos reservados.</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+
+</html>
