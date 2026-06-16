@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>BiblioTech - Controle (Admin)</title>
+</head>
+<body>
+
+    <h1>BiblioTech - Painel do Administrador</h1>
+
+    <header>
+        <section class="navegacao">
+            <nav>
+                <ul>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="gestaoClientes.html">Gestão de Clientes</a></li>
+                    <li><a href="controleEmprestimos.html">Controle de Empréstimos</a></li>
+                </ul>
+            </nav>
+        </section>
+    </header>
+
+    <main>
+        <section class="controleEmprestimos">
+            <h2>Controle de Empréstimos</h2>
+            <p>Selecione o cliente para registrar o empréstimo do livro selecionado:</p>
+
+            <select id="clienteSelect"></select>
+
+            <div id="emprestimosAtivos">
+                <h3>Empréstimos Ativos</h3>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 BiblioTech. Todos os direitos reservados.</p>
+    </footer>
+    <script src="script.js"></script>
+    
+</body>
+</html>

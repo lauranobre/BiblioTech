@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>BiblioTech</title>
+</head>
+
+<body class="login-page">
+
+    <div class="login-card">
+
+        <h1>BiblioTech</h1>
+        <p class="subtitulo-login">
+            Sistema de Gestão de Biblioteca Inteligente
+        </p>
+
+        <form>
+            <label for="user">Usuário</label>
+            <input type="text" id="user" placeholder="Digite seu nome">
+
+            <label for="pass">Senha</label>
+            <input type="password" id="pass" placeholder="Digite sua senha">
+
+            <button onclick="event.preventDefault(); fazerLogin()">
+                Entrar
+            </button>
+
+            <button
+                type="button"
+                class="btn-secundario"
+                onclick="window.location.href='cadastroCliente.html'">
+                Cadastrar Novo Cliente
+            </button>
+        </form>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2024 BiblioTech. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

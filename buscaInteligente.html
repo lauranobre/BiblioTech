@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>BiblioTech</title>
+</head>
+<body>
+
+    <h1>BiblioTech - A Biblioteca do Futuro</h1>
+
+    <header>
+        <section class="navegacao">
+            <nav>
+                <ul>
+                    <li><a href="login.html">Início</a></li>
+                    <li><a href="buscaInteligente.html">Busca Inteligente de Livros</a></li>
+                    <li><a href="painelEmprestimos.html">Meus Empréstimos</a></li>
+                </ul>
+            </nav>
+        </section>
+    </header>
+
+    <main>
+
+        <section class="buscaInteligente">
+            <h2 id="buscaInteligente">Busca Inteligente de Livros</h2>
+            <p>Encontre livros de forma rápida e eficiente com nossa busca inteligente.</p>
+
+            <input type="text" id="nome-livro" placeholder="Digite o nome do livro">
+
+            <button id="buscar-livro-btn">
+                Buscar Livro
+            </button>
+
+            <div id="status-livro"></div>
+            <div id="resultado-livros"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 BiblioTech. Todos os direitos reservados.</p>
+    </footer>
+    <script src="script.js"></script>
+
+</body>
+</html>

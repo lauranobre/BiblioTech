@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>BiblioTech - Gestão de Clientes</title>
+</head>
+<body>
+    <h1>BiblioTech - Painel de Controle</h1>
+
+    <header>
+        <section class="navegacao">
+            <nav>
+                <ul>
+                    <li><a href="login.html">Início</a></li>
+                    <li><a href="gestaoClientes.html">Gestão de Clientes</a></li>
+                    <li><a href="controleEmprestimos.html">Controle Empréstimos</a></li>
+                </ul>
+            </nav>
+        </section>
+    </header>
+
+    <main>
+        <section class="gestaoCliente">
+            <h2>Gestão de Clientes</h2>
+            <p>Gerenciamento de usuários do sistema.</p>
+            
+            <button onclick="window.location.href='cadastroCliente.html'" style="margin-bottom: 20px; background-color: #3b82f6;">
+                + Cadastrar Novo Cliente
+            </button>
+
+            <div id="listaClientes">
+                <h3>Clientes Cadastrados</h3>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 BiblioTech. Todos os direitos reservados.</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

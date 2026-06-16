@@ -1,17 +1,55 @@
+// 1. LOGIN E SESSÃO
+function fazerLogin(){
+    localStorage.removeItem("leitorLogado");
+
+    const usuario = document.getElementById('user').value.trim();
+    const senha = document.getElementById('pass').value;
+
+    if (usuario === 'administrador' && senha === '666'){ 
+        window.location.href = "gestaoClientes.html";
+        return; 
+    }
+    
+    let clientes = JSON.parse(localStorage.getItem("clientes")) || [];
+
+    const clienteExiste = clientes.find(cliente => cliente.nome.toLowerCase() === usuario.toLowerCase());
+
+    // Valida o cliente ou usuário padrão 'leitor'
+    if (clienteExiste && senha === '777') {
+        localStorage.setItem("leitorLogado", clienteExiste.nome);
+        window.location.href = "buscaInteligente.html";
+    } else if (usuario === 'leitor' && senha === '777') {
+        window.location.href = "buscaInteligente.html";
+    } else {
+        alert("Usuário não cadastrado ou senha incorreta!");
+    }
+}
+
+// 2. NAVEGAÇÃO
+function irParaGestaoClientes() {
+    window.location.href = "gestaoClientes.html";
+}
+
+// 3. INICIALIZAÇÃO DA PÁGINA (window.onload)
 let livroSelecionado = null;
 
-// Executa assim que a página carregar na tela
 window.onload = function() {
     mostrarClientes();
     carregarClientesSelect();
     mostrarEmprestimos();
 };
 
-// GESTÃO DE CLIENTES
+// 4. GESTÃO DE CLIENTES
 function CadastrarCliente() {
-    const nome = document.getElementById('nome').value.trim();
-    const email = document.getElementById('email').value.trim();
-    const cpf = document.getElementById('cpf').value.trim();
+    const nomeInput = document.getElementById('nome');
+    const emailInput = document.getElementById('email');
+    const cpfInput = document.getElementById('cpf');
+
+    if (!nomeInput || !emailInput || !cpfInput) return;
+
+    const nome = nomeInput.value.trim();
+    const email = emailInput.value.trim();
+    const cpf = cpfInput.value.trim();
 
     if (!nome || !email || !cpf) {
         alert("Por favor, preencha todos os campos.");
@@ -22,25 +60,26 @@ function CadastrarCliente() {
     clientes.push({ nome, email, cpf });
     localStorage.setItem("clientes", JSON.stringify(clientes));
 
-    document.getElementById('nome').value = '';
-    document.getElementById('email').value = '';
-    document.getElementById('cpf').value = '';
+    nomeInput.value = '';
+    emailInput.value = '';
+    cpfInput.value = '';
 
     mostrarClientes();
     carregarClientesSelect();
 
     alert("Cliente cadastrado com sucesso!");
+    window.location.href = "gestaoClientes.html"; 
 }
 
 function mostrarClientes() {
-    const clientes = JSON.parse(localStorage.getItem("clientes")) || [];
     const listaClientes = document.getElementById("listaClientes");
+    if (!listaClientes) return; // Proteção contra erros
     
-    // Mantém o título h3 original
+    const clientes = JSON.parse(localStorage.getItem("clientes")) || [];
     listaClientes.innerHTML = "<h3>Clientes Cadastrados</h3>";
     
     if(clientes.length === 0) {
-        listaClientes.innerHTML += "<p style='color: #64748b; font-size: 0.9rem;'>Nenhum cliente cadastrado.</p>";
+        listaClientes.innerHTML += "<p style='color: #282e35; font-size: 0.9rem;'>Nenhum cliente cadastrado.</p>";
         return;
     }
 
@@ -56,8 +95,7 @@ function mostrarClientes() {
     });
 }
 
-
-// BUSCA INTELIGENTE DE LIVROS
+// 5. BUSCA INTELIGENTE DE LIVROS (API)
 async function buscarLivroAPI(nomeLivro) {
     try {
         const resposta = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(nomeLivro)}`);
@@ -72,6 +110,8 @@ async function buscarLivroAPI(nomeLivro) {
 
 function renderizarLivros(livros) {
     const resultado = document.querySelector("#resultado-livros");
+    if (!resultado) return;
+
     resultado.innerHTML = "";
 
     livros.slice(0, 4).forEach(livro => {
@@ -97,39 +137,74 @@ function renderizarLivros(livros) {
 
 function selecionarLivro(titulo, capa) {
     livroSelecionado = { titulo, capa };
-    alert(`Livro selecionado com sucesso: "${titulo}". Agora escolha o cliente abaixo para finalizar.`);
+    const leitorLogado = localStorage.getItem("leitorLogado");
+
+    if (leitorLogado) {
+        // Fluxo Leitor: Faz o empréstimo automático na hora
+        const confirmar = confirm(`Deseja confirmar o empréstimo do livro "${titulo}" para você (${leitorLogado})?`);
+        if (confirmar) {
+            FinalizarEmprestimoAutomatico(leitorLogado);
+        }
+    } else {
+        // Fluxo Admin
+        alert(`Livro selecionado com sucesso: "${titulo}". Agora vá para o Controle de Empréstimos para associá-lo a um cliente.`);
+    }
 }
 
-// Evento do botão de busca
-document.querySelector("#buscar-livro-btn").addEventListener("click", async () => {
-    const nomeLivro = document.querySelector("#nome-livro").value.trim();
-    const statusLivro = document.querySelector("#status-livro");
-    const resultado = document.querySelector("#resultado-livros");
+// Escuta o botão de busca apenas se ele existir na página atual
+document.addEventListener("DOMContentLoaded", () => {
+    const btnBusca = document.querySelector("#buscar-livro-btn");
+    if (btnBusca) {
+        btnBusca.addEventListener("click", async () => {
+            const nomeLivro = document.querySelector("#nome-livro").value.trim();
+            const statusLivro = document.querySelector("#status-livro");
+            const resultado = document.querySelector("#resultado-livros");
 
-    if (nomeLivro === "") {
-        alert("Digite o nome do livro.");
-        return;
-    }
+            if (nomeLivro === "") {
+                alert("Digite o nome do livro.");
+                return;
+            }
 
-    statusLivro.innerText = "Buscando livro...";
-    resultado.innerHTML = "";
+            statusLivro.innerText = "Buscando livro...";
+            resultado.innerHTML = "";
 
-    const livros = await buscarLivroAPI(nomeLivro);
+            const livros = await buscarLivroAPI(nomeLivro);
 
-    if (livros && livros.length > 0) {
-        renderizarLivros(livros);
-        statusLivro.innerText = "";
-    } else {
-        statusLivro.innerText = "Livro não encontrado.";
+            if (livros && livros.length > 0) {
+                renderizarLivros(livros);
+                statusLivro.innerText = "";
+            } else {
+                statusLivro.innerText = "Livro não encontrado.";
+            }
+        });
     }
 });
 
+// 6. CONTROLE E PAINEL DE EMPRÉSTIMOS
+function FinalizarEmprestimoAutomatico(nomeLeitor) {
+    let emprestimos = JSON.parse(localStorage.getItem("emprestimos")) || [];
+    const devolucao = new Date();
+    devolucao.setDate(devolucao.getDate() + 7);
 
-// CONTROLE DE EMPRÉSTIMOS 
+    emprestimos.push({
+        cliente: nomeLeitor,
+        livro: livroSelecionado.titulo,
+        capa: livroSelecionado.capa,
+        dataDevolucao: devolucao.toLocaleDateString("pt-BR")
+    });
+
+    localStorage.setItem("emprestimos", JSON.stringify(emprestimos));
+    livroSelecionado = null; 
+
+    alert("Empréstimo realizado com sucesso! Redirecionando para seus prazos...");
+    window.location.href = "painelEmprestimos.html";
+}
+
 function carregarClientesSelect() {
-    const clientes = JSON.parse(localStorage.getItem("clientes")) || [];
     const select = document.getElementById("clienteSelect");
+    if (!select) return; // Proteção contra erros
 
+    const clientes = JSON.parse(localStorage.getItem("clientes")) || [];
     select.innerHTML = '<option value="">Selecione um cliente...</option>';
 
     clientes.forEach(cliente => {
@@ -141,7 +216,10 @@ function carregarClientesSelect() {
 }
 
 function FinalizarEmprestimo() {
-    const cliente = document.getElementById("clienteSelect").value;
+    const selectCliente = document.getElementById("clienteSelect");
+    if (!selectCliente) return;
+
+    const cliente = selectCliente.value;
 
     if (!cliente) {
         alert("Selecione um cliente na lista.");
@@ -167,30 +245,43 @@ function FinalizarEmprestimo() {
     localStorage.setItem("emprestimos", JSON.stringify(emprestimos));
     
     livroSelecionado = null; 
-    document.getElementById("clienteSelect").value = "";
+    selectCliente.value = "";
 
     mostrarEmprestimos();
     alert("Empréstimo realizado com sucesso!");
 }
 
 function mostrarEmprestimos() {
-    const emprestimos = JSON.parse(localStorage.getItem("emprestimos")) || [];
     const container = document.getElementById("emprestimosAtivos");
+    if (!container) return; // Proteção contra erros
 
+    const mapEmprestimos = JSON.parse(localStorage.getItem("emprestimos")) || [];
     container.innerHTML = "<h3>Empréstimos Ativos</h3>";
 
-    if(emprestimos.length === 0){
-        container.innerHTML += "<p style='color: #64748b; font-size: 0.9rem;'>Nenhum empréstimo ativo.</p>";
+    const leitorLogado = localStorage.getItem("leitorLogado");
+
+    // Filtra a lista: Se a Luiza estiver logada, só mostra os dela. Se for admin, mostra tudo.
+    const emprestimosFiltrados = mapEmprestimos.filter(emp => {
+        if (leitorLogado) {
+            return emp.cliente.toLowerCase() === leitorLogado.toLowerCase();
+        }
+        return true; 
+    });
+
+    if (emprestimosFiltrados.length === 0) {
+        container.innerHTML += "<p style='color: #94a3b8; font-size: 0.9rem;'>Nenhum empréstimo ativo encontrado.</p>";
         return;
     }
 
-    emprestimos.forEach(emp => {
+    emprestimosFiltrados.forEach(emp => {
         const card = document.createElement("div");
         card.className = "item-cadastrado";
-        card.style.borderLeftColor = "#4ade80";
+        card.style.borderLeft = "5px solid #4ade80"; // Mantém a bordinha verde de ativo
+        card.style.marginBottom = "10px";
+        
         card.innerHTML = `
-            <p><strong>Livro:</strong> ${emp.livro}</p>
-            <p><strong>Lector/Cliente:</strong> ${emp.cliente}</p>
+            <p><strong>Livro:</strong> <span>${emp.livro}</span></p>
+            <p><strong>Leitor/Cliente:</strong> <span>${emp.cliente}</span></p>
             <p style="color: #4ade80;"><strong>Devolução até:</strong> ${emp.dataDevolucao}</p>
         `;
         container.appendChild(card);
